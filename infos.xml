@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<title><![CDATA[AutoSave]]></title>
+	<author><![CDATA[Rockyhorror, Cyril MAGUIRE]]></author>
+	<version>0.4</version>
+	<date>13/02/2015</date>
+	<site>http://thepoulpe.net</site>
+	<description><![CDATA[Plugin sauvegardant automatiquement les articles et les pages statiques lors de leur rédaction]]></description>
+	<requirements></requirements>
+</document>
