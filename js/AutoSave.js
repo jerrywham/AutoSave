@@ -1,64 +1,31 @@
-;(function(window,undefined,duration,$) {
+/**
+ * Plugin AutoSave
+ *
+ * @package	PLX
+ * @version	0.4bis
+ * @date	16/02/2015
+ * @author	Cyril MAGUIRE
+ **/
+;function AutoSave() {
+	var form_article = $('#form_article')
+	var form_static = $('#form_static');
+	
+	var newBlocMsg = document.createElement('p');
+	newBlocMsg.innerHTML = '<img src="../../plugins/AutoSave/autosave.png" alt="Save locally enable" title="Sauvegarde localle activée"/>' ;
 
-    'use_strict';
-
-    function isIE() {
-        var nav = navigator.userAgent.toLowerCase();
-        return (nav.indexOf('msie') != -1) ? parseInt(nav.split('msie')[1]) : false;
-    }
-
-   	function Remove(idToRemove) {
-        if (isIE()) {
-            document.getElementById(idToRemove).removeNode(true);
-        } else {
-            var Node1 = document.body; 
-            var len = Node1.childNodes.length;
-            
-            for(var i = 0; i < len; i++){           
-                if (Node1.childNodes[i] != undefined && Node1.childNodes[i].id != undefined && Node1.childNodes[i].id == idToRemove){
-                    Node1.removeChild(Node1.childNodes[i]);
-                }
-            }
-        }   
-    }
-
-    function createMsgAutoSave(timeOutToCreateMsg) {
-    	Remove('msg');
-    	var DomParent = document.body;
-    	var newBlocMsg = document.createElement('p');
-
-    	newBlocMsg.setAttribute('id','msg');
-    	newBlocMsg.setAttribute('class','notification success');
-    	newBlocMsg.innerHTML = 'AutoSave' ;
-
-    	DomParent.appendChild(newBlocMsg);
-    	setMsg();
-    	setTimeout(function() {
-    		createMsgAutoSave(timeOutToCreateMsg);
-    	}, timeOutToCreateMsg);
-    }
-
-	function AutoSave(duration,$) {
-
-		var timeOutToCreateMsg = duration *1000; //timeoutForSaving seconds
-		var form_article = $('#form_article')
-		var form_static = $('#form_static');
-		
-    	if (form_article.length > 0 ) {
-    		form_article.sisyphus({
-    			timeout: duration,
-    			onSave: createMsgAutoSave(timeOutToCreateMsg)
-    		});
-    	}
-    	if (form_static.length > 0) {
-    		form_static.sisyphus({
-    			timeout: duration,
-    			onSave: createMsgAutoSave(timeOutToCreateMsg)
-    		});
-    	}
-	};
-
-    window.AutoSave = AutoSave;
-    window.createMsgAutoSave = createMsgAutoSave;
-
-})(window);
+	if (form_article.length > 0 ) {
+		form_article.sisyphus({
+			autoRelease:true,
+			locationBased:true
+		});
+    	$('h2').append(newBlocMsg);
+	}
+	if (form_static.length > 0) {
+		form_static.sisyphus({
+			autoRelease:true,
+			locationBased:true
+		});
+    	form_static.prepend(newBlocMsg);
+	}
+};
+AutoSave();
