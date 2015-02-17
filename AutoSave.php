@@ -3,8 +3,8 @@
  * Plugin AutoSave
  *
  * @package	PLX
- * @version	0.4bis
- * @date	16/02/2015
+ * @version	0.4ter
+ * @date	17/02/2015
  * @author	Rockyhorror, Cyril MAGUIRE
  **/
  
@@ -24,8 +24,52 @@ class AutoSave extends plxPlugin {
 		parent::__construct($default_lang);
 		
 		# Déclarations des hooks
+		$this->addHook('plxMotorConstructLoadPlugins', 'plxMotorConstructLoadPlugins');
 		$this->addHook('AdminFootEndBody', 'AdminFootEndBody');
 		$this->addHook('AdminPrepend', 'AdminPrepend');
+	}
+
+	/**
+	 * Méthode qui permet de vérifier que le plugin est chargé après tynimce
+	 *
+	 * @return bool
+	 * @author Cyril MAGUIRE
+	 */
+	public function plxMotorConstructLoadPlugins() {
+	echo '<?php
+		$aActivePlugins = $this->plxPlugins->aPlugins;
+		$keys = array_keys($aActivePlugins);
+		$kautosave = 0;
+		$ktynimce = 0;
+		foreach ($keys as $k => $p) {
+			if ($p == \'AutoSave\'){
+				$kautosave = $k;
+			} else if (stripos($p,\'tynimce\') !== false) {
+				$ktynimce = $k;
+			}
+		}
+		if ($kautosave < $ktynimce) {
+			unset($this->plxPlugins->aPlugins[\'AutoSave\']);
+			unset($this->plxPlugins->aPlugins[\'spxtynimce\']);
+
+			$this->plxPlugins->aPlugins[\'spxtynimce\'] = $aActivePlugins[\'spxtynimce\'];
+			$this->plxPlugins->aPlugins[\'AutoSave\'] = $aActivePlugins[\'AutoSave\'];
+		}
+
+		# Début du fichier XML
+		$xml = "<?xml version=\'1.0\' encoding=\'".PLX_CHARSET."\'?>\n";
+		$xml .= "<document>\n";
+		foreach($this->plxPlugins->aPlugins as $k=>$v) {
+				$xml .= "\t<plugin name=\"$k\"></plugin>\n";
+		}
+		$xml .= "</document>";
+
+		# On écrit le fichier
+		if(plxUtils::write($xml,path(\'XMLFILE_PLUGINS\')))
+			return true;
+		else
+			return false;
+		?>';
 	}
 
 	/**
@@ -40,6 +84,7 @@ class AutoSave extends plxPlugin {
 			</script>'."\n";
 		echo "\t".'<script type="text/javascript" src="'.PLX_PLUGINS.'AutoSave/js/sisyphus/sisyphus.min.js"></script>'."\n";
 		echo "\t".'<script type="text/javascript" src="'.PLX_PLUGINS.'AutoSave/js/AutoSave.js"></script>'."\n";
+		echo "\t".'<script type="text/javascript">AutoSave("'.PLX_PLUGINS.'");</script>'."\n";
 	}
 }
 ?>
